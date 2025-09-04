@@ -68,6 +68,7 @@ services:
       - "3306:3306"
     environment:
      - MYSQL_USER=daniel
+     - MYSQL_DATABASE=azul-crm-db
      - MYSQL_PASSWORD=password
      - MYSQL_ROOT_PASSWORD=password
     volumes:
