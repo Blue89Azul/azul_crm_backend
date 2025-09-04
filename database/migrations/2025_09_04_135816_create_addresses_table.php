@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->bigIncrements('address_id');
+            $table->char('country_code', 2)->comment('ISO 3166-1 alpha-2 国コード');
+            $table->string('postal_code', 20)->nullable()->comment('郵便番号');
+            $table->string('state_province', 100)->nullable()->comment('都道府県/州');
+            $table->string('city', 100)->comment('市区町村');
+            $table->string('street_address_1', 255)->comment('住所1（番地、建物名等）');
+            $table->string('street_address_2', 255)->nullable()->comment('住所2（部屋番号等）');
+            $table->unsignedInteger('created_at');
+            $table->unsignedInteger('updated_at');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('addresses');
+    }
+};
