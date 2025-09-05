@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('negotiation_status_groups', function (Blueprint $table) {
             $table->bigIncrements('negotiation_status_group_id');
             $table->string('group_name', 100)->comment('ステータスグループ名');
-            $table->unsignedInteger('created_at');
-            $table->unsignedInteger('updated_at');
+            $table->unsignedInteger('created_at')->comment('作成日時(UNIX timestamp)');
+            $table->unsignedInteger('updated_at')->comment('更新日時(UNIX timestamp)');
         });
     }
 

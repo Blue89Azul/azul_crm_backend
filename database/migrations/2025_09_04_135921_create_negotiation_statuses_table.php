@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('negotiation_status_group_id')->comment('ステータスグループID');
             $table->string('status_name', 100)->comment('ステータス名');
             $table->unsignedInteger('sort_order')->default(0)->comment('表示順序');
-            $table->unsignedInteger('created_at');
-            $table->unsignedInteger('updated_at');
+            $table->unsignedInteger('created_at')->comment('作成日時(UNIX timestamp)');
+            $table->unsignedInteger('updated_at')->comment('更新日時(UNIX timestamp)');
             $table->foreign('negotiation_status_group_id')->references('negotiation_status_group_id')->on('negotiation_status_groups')->cascadeOnDelete();
         });
     }
