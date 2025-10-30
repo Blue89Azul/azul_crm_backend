@@ -25,7 +25,3 @@ jobs:
 
       - name: Unit test
         run: php artisan test
-
-      # MySQL起動
-      # Migration実行
-      # Scramble実行
