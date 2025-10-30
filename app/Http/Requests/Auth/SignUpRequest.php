@@ -3,8 +3,13 @@
 namespace App\Http\Requests\Auth;
 
 use App\Enums\UserRole;
+use App\Http\Responses\ApiErrorResponse;
+use App\Rules\Auth\ValidInvitationCode;
+use App\Rules\Auth\ValidPassword;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SignUpRequest extends FormRequest
 {
@@ -24,8 +29,8 @@ class SignUpRequest extends FormRequest
     public function rules(): array
     {
         $rule = [
-            'email'    => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email:filter', 'unique:users'],
+            'password' => ['required', new ValidPassword],
             'role'     => ['required', Rule::enum(UserRole::class)],
         ];
 
@@ -33,9 +38,26 @@ class SignUpRequest extends FormRequest
         $userRole = $this->input('role');
 
         if (UserRole::from($userRole)?->isMember()) {
-            $rule['invitation_code'] = ['required', 'string',];
+            $rule['invitation_code'] = ['required', new ValidInvitationCode];
         }
 
         return $rule;
+    }
+
+
+    /**
+     * Summary of failedValidation
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            ApiErrorResponse::make(
+                'Invalid Parameter',
+                $validator->errors()->first(),
+                422,
+            )->toResponse()
+        );
     }
 }
