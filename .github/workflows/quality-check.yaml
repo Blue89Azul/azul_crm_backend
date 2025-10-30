@@ -1,0 +1,31 @@
+name: Quality Check
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Install Composer
+        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+      - name: Static Code Analysis
+        run: ./vendor/bin/phpstan analyse
+
+      - name: Unit test
+        run: php artisan test
+
+      # MySQL起動
+      # Migration実行
+      # Scramble実行
