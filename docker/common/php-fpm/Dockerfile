@@ -40,6 +40,8 @@ RUN if getent group ${GID}; then \
 RUN sed -i "s/user = www-data/user = www/g" /usr/local/etc/php-fpm.d/www.conf && \
     sed -i "s/group = www-data/group = $group_name/g" /usr/local/etc/php-fpm.d/www.conf
 
+# PDOインストール
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Set the working directory
 WORKDIR /var/www
