@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('role_id')->nullable()->constrained('user_roles')->nullOnDelete();
             $table->foreignId('organization_id')->nullable()->constrained('user_organizations')->nullOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('used_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('redeemed_at')->nullable()->comment('招待コードが使用（償却）された日時');
             $table->timestamp('expires_at')->nullable()->comment('有効期限');
             $table->timestamps();
