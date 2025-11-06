@@ -31,6 +31,7 @@ class ValidPassword implements ValidationRule
 
         if (!preg_match('/[A-Za-z]/', $value)) {
             $fail(':attributeは英字を一文字以上含めてください。');
+            return;
         }
 
         if (!preg_match('/\d/', $value)) {
