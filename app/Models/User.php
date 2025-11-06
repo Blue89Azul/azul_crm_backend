@@ -15,10 +15,14 @@ class User extends Authenticatable implements JWTSubject
     protected $attributes = [
         'name_last'  => '',
         'name_first' => '',
-        'inivitation_code_id' => 0,
     ];
 
-    protected $guarded = [];
+    protected $fillable = [
+        'email',
+        'password',
+        'name_last',
+        'name_first',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
