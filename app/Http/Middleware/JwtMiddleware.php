@@ -25,7 +25,7 @@ class JwtMiddleware
             return ApiErrorResponse::make(
                 'Authentication Failed',
                 $e->getMessage(),
-                400
+                401
             )->toResponse();
         }
 
