@@ -4,7 +4,7 @@ namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
 
-final class ApiErrorResponse
+final class ApiErrorResponse implements ApiResponse
 {
     const SWAGGER_URL = "https://api.example.com/docs/";
 
