@@ -19,10 +19,15 @@ class AuthService
         string $password,
         ?string $invitation_code
     ): User {
+        $now = now();
+
         return $this->repository->createUser([
             'email'           => $email,
-            'password'        => Hash::make($password),
-            'invitation_code' => $invitation_code
+            'password'        => $password,
+            'invitation_code' => $invitation_code,
+            'created_at'      => $now,
+            'updated_at'      => $now,
+            'loggedin_at'     => $now,
         ]);
     }
 }
