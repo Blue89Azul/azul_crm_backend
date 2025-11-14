@@ -6,7 +6,6 @@ namespace App\Services\Auth;
 
 use App\Models\User;
 use App\Repositories\Auth\AuthRepository;
-use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
