@@ -37,7 +37,7 @@ class SignUpRequest extends FormRequest
         /** @var \Illuminate\Foundation\Http\FormRequest|\Illuminate\Http\Request $this */
         $userRole = $this->input('role');
 
-        if (UserRole::from($userRole)?->isMember()) {
+        if (!is_null($userRole) && UserRole::from($userRole)->isMember()) {
             $rule['invitation_code'] = ['required', new ValidInvitationCode];
         }
 
