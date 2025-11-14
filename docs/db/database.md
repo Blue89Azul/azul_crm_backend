@@ -1,16 +1,21 @@
 -- ===================================
 -- 1. Users テーブル
 -- ===================================
-CREATE TABLE users (
-    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    uuid VARCHAR(36) NOT NULL UNIQUE COMMENT 'FirebaseAuth UUID',
-    name_last VARCHAR(100) NOT NULL DEFAULT '' COMMENT '姓',
-    name_first VARCHAR(100) NOT NULL DEFAULT '' COMMENT '名',
-    mail VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'メールアドレス',
-    created_at INT UNSIGNED NOT NULL COMMENT '作成日時(UNIX timestamp)',
-    updated_at INT UNSIGNED NOT NULL COMMENT '更新日時(UNIX timestamp)',
-    loggedin_at INT UNSIGNED DEFAULT 0 COMMENT '最終ログイン日時(UNIX timestamp)',
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ユーザーテーブル';
+CREATE TABLE `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name_last` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '姓',
+  `name_first` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名',
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'メールアドレス',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'パスワード',
+  `user_role_id` bigint unsigned DEFAULT NULL COMMENT 'ユーザーロールID',
+  `created_at` int unsigned NOT NULL COMMENT '作成日時(UNIX timestamp)',
+  `updated_at` int unsigned NOT NULL COMMENT '更新日時(UNIX timestamp)',
+  `loggedin_at` int unsigned NOT NULL COMMENT '最終ログイン日時(UNIX timestamp)',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  KEY `users_user_role_id_foreign` (`user_role_id`),
+  CONSTRAINT `users_user_role_id_foreign` FOREIGN KEY (`user_role_id`) REFERENCES `user_roles` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ===================================
 -- 2. Addresses テーブル  
@@ -98,3 +103,12 @@ CREATE TABLE negotiations (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE SET NULL,
     FOREIGN KEY (status_id) REFERENCES negotiation_statuses(negotiation_status_id) ON DELETE RESTRICT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商談テーブル';
+
+-- ===================================
+-- 8. User Roles テーブル
+-- ===================================
+CREATE TABLE `user_roles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ロール名',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
