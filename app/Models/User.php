@@ -13,8 +13,9 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable;
 
     protected $attributes = [
-        'name_last'  => '',
-        'name_first' => '',
+        'name_last'   => '',
+        'name_first'  => '',
+        'loggedin_at' => 0,
     ];
 
     protected $fillable = [
