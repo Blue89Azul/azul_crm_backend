@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Http\Responses\ApiErrorResponse;
+use App\Http\Responses\ApiSuccessResponse;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -52,5 +53,52 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'expires_in' => 3600
         ], 200);
+    }
+
+    public function login(Request $request): JsonResponse
+    {
+        $credentials = $request->only('email', 'password');
+
+        try {
+            $token = JWTAuth::attempt($credentials);
+
+            if (!$token) {
+                return ApiErrorResponse::make(
+                    title: 'Invalid credentials',
+                    detail: 401,
+                )->toResponse();
+            }
+        } catch (JWTException $e) {
+            return ApiErrorResponse::make(
+                title: 'Invalid credentials',
+                detail: $e->getMessage(),
+                status: 500,
+            )->toResponse();
+        }
+
+        return response()->json([
+            'token'      => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => 3600
+        ], 200);
+    }
+
+    public function logout(): JsonResponse
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+        } catch (JWTException $e) {
+            return ApiErrorResponse::make(
+                title: 'Invalid credentials',
+                detail: $e->getMessage(),
+                status: 500,
+            )->toResponse();
+        }
+
+        return ApiSuccessResponse::make(
+            data: [
+                'message' => 'log out successfully'
+            ]
+        )->toResponse();
     }
 }
