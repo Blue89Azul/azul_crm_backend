@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('title', 255)->default('')->comment('商談タイトル');
             $table->text('description')->nullable()->comment('商談詳細');
             $table->unsignedBigInteger('amount')->default(0)->comment('商談金額');
-            $table->unsignedInteger('scheduled_date')->comment('予定日時)');
-            $table->unsignedInteger('created_at')->comment('作成日時(UNIX timestamp)');
-            $table->unsignedInteger('updated_at')->comment('更新日時(UNIX timestamp)');
+            $table->dateTime('scheduled_date')->comment('予定日時)');
+            $table->dateTime('created_at')->comment('作成日時');
+            $table->dateTime('updated_at')->comment('更新日時');
             $table->foreign('customer_id')->references('customer_id')->on('customers')->nullOnDelete();
             $table->foreign('status_id')->references('negotiation_status_id')->on('negotiation_statuses')->restrictOnDelete();
         });

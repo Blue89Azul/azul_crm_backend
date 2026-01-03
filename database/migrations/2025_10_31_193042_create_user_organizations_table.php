@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_organizations', function (Blueprint $table) {
             $table->id();
             $table->string('organizations_name')->comment('組織名');
-            $table->timestamps();
+            $table->datetimes();
         });
     }
 

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id')->default(0)->comment('会社ID');
             $table->unsignedBigInteger('address_id')->nullable()->comment('住所ID');
             $table->string('title', 100)->default('')->comment('役職');
-            $table->unsignedInteger('created_at')->comment('作成日時(UNIX timestamp)');
-            $table->unsignedInteger('updated_at')->comment('更新日時(UNIX timestamp)');
+            $table->dateTime('created_at')->comment('作成日時(UNIX timestamp)');
+            $table->dateTime('updated_at')->comment('更新日時(UNIX timestamp)');
             $table->foreign('company_id')->references('company_id')->on('companies')->restrictOnDelete();
             $table->foreign('address_id')->references('address_id')->on('addresses')->nullOnDelete();
             $table->index('company_id', 'idx_company_id');

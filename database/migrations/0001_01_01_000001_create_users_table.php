@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('email', 255)->default('')->unique()->comment('メールアドレス');
             $table->string('password', 255)->comment('パスワード');
             $table->unsignedBigInteger('user_role_id')->nullable()->comment('ユーザーロールID');
-            $table->integer('created_at')->unsigned()->comment('作成日時(UNIX timestamp)');
-            $table->integer('updated_at')->unsigned()->comment('更新日時(UNIX timestamp)');
-            $table->integer('loggedin_at')->unsigned()->comment('最終ログイン日時(UNIX timestamp)');
+            $table->dateTime('created_at')->comment('作成日時');
+            $table->dateTime('updated_at')->comment('更新日時');
+            $table->dateTime('loggedin_at')->comment('最終ログイン日時');
             $table->foreign('user_role_id')->references('id')->on('user_roles')->nullOnDelete();
         });
 

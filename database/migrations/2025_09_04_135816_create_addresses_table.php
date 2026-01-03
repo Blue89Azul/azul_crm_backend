@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('city', 100)->comment('市区町村');
             $table->string('street_address', 255)->comment('住所1（番地、建物名等）');
             $table->string('building', 255)->nullable()->comment('住所2（部屋番号等）');
-            $table->unsignedInteger('created_at')->comment('作成日時(UNIX timestamp)');
-            $table->unsignedInteger('updated_at')->comment('更新日時(UNIX timestamp)');
+            $table->dateTime('created_at')->comment('作成日時');
+            $table->dateTime('updated_at')->comment('更新日時');
         });
     }
 
