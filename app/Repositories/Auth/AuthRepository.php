@@ -12,4 +12,9 @@ class AuthRepository
     {
         return User::create($attributes);
     }
+
+    public function existsByEmail(string $email): bool
+    {
+        return User::where('email', $email)->exists();
+    }
 }
