@@ -15,7 +15,6 @@ class User extends Authenticatable implements JWTSubject
     protected $attributes = [
         'name_last'   => '',
         'name_first'  => '',
-        'loggedin_at' => 0,
     ];
 
     protected $fillable = [
@@ -23,6 +22,10 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'name_last',
         'name_first',
+        'user_role_id',
+        'invitation_code_id',
+        'organization_id',
+        'loggedin_at',
     ];
 
     /**
@@ -40,18 +43,17 @@ class User extends Authenticatable implements JWTSubject
     protected function casts(): array
     {
         return [
-            'created_at'  => 'timestamp',
-            'updated_at'  => 'timestamp',
-            'loggedin_at' => 'timestamp',
             'password'    => 'hashed',
+            'created_at'  => 'datetime',
+            'updated_at'  => 'datetime',
+            'loggedin_at' => 'datetime',
         ];
     }
 
-    public function getDateFormat()
+    public function invitationCode()
     {
-        return 'U';
+        return $this->hasOne(InvitationCode::class);
     }
-
 
     public function getJWTIdentifier()
     {

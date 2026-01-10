@@ -16,6 +16,11 @@ class InvitationCode extends Model
         'expires_at',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected static function booted()
     {
         static::creating(function ($model) {
