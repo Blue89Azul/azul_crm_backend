@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Http\Responses\ApiErrorResponse;
 use App\Http\Responses\ApiSuccessResponse;
 use App\Services\Auth\AuthService;
+use App\UseCases\Auth\LoginWithEmailUseCase;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-
     public function __construct(
-        protected AuthService $authService
+        protected AuthService $authService,
+        protected LoginWithEmailUseCase $loginWithEmailUseCase
     ) {}
 
     /**
@@ -24,20 +27,41 @@ class AuthController extends Controller
      * @param \App\Http\Requests\Auth\SignUpRequest $request
      * @return JsonResponse
      * 
-     * HTTPステータスをEnumで管理してもいいかも
      */
     public function signup(SignUpRequest $request): JsonResponse
     {
-        $validated_data = $request->validated();
+        $data = $request->validated();
+        $userRole = UserRole::tryFrom($data['role']);
 
-        // ユーザー追加
-        $user = $this->authService->signup(
-            $validated_data['email'],
-            $validated_data['password'],
-            $validated_data['invitation_code'] ?? ""
-        );
+        if (is_null($userRole)) {
+            return ApiErrorResponse::make(
+                'トークン作成失敗',
+                'ユーザーロールがリクエストに含まれていません',
+                400,
+            )->toResponse();
+        }
 
-        // JWTトークンの作成
+        $result = null;
+        if ($userRole->isAdmin()) {
+            $result  = $this->authService->signupByAdmin(
+                $data['account'],
+                $data['email'],
+                $data['password'],
+            );
+        }
+
+        if ($userRole->isMember()) {
+            $result  = $this->authService->signupByMember(
+                $data['account'],
+                $data['email'],
+                $data['password'],
+                $data['code']
+            );
+        }
+
+        $user    = $result['user'];
+        $account = $result['account'];
+
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
@@ -48,20 +72,22 @@ class AuthController extends Controller
             )->toResponse();
         }
 
-        return response()->json([
-            'token'      => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => 3600
-        ], 200);
+        return ApiSuccessResponse::make(
+            data: [
+                'account' => $request->account,
+                'jwt'     => $token,
+                'user'    => [
+                    'email'   => $user->email,
+                    'role_id' => $user->user_role_id,
+                ]
+            ],
+        )->toResponse();
     }
 
     public function login(Request $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
-
         try {
-            $token = JWTAuth::attempt($credentials);
-
+            $token = ($this->loginWithEmailUseCase)($request);
             if (!$token) {
                 return ApiErrorResponse::make(
                     title: 'Invalid credentials',
@@ -76,11 +102,18 @@ class AuthController extends Controller
             )->toResponse();
         }
 
-        return response()->json([
-            'token'      => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => 3600
-        ], 200);
+        $user = Auth::user();
+
+        return ApiSuccessResponse::make(
+            data: [
+                'account' => $request->account,
+                'jwt'     => $token,
+                'user'    => [
+                    'email'   => $user->email,
+                    'role_id' => $user->user_role_id,
+                ]
+            ],
+        )->toResponse();
     }
 
     public function logout(): JsonResponse
