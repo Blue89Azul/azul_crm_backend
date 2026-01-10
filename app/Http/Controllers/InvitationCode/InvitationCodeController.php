@@ -18,7 +18,6 @@ class InvitationCodeController extends Controller
         private CreateNewCodeUseCase $createNewCodeUseCase
     ) {}
 
-    // ページネーションさせるか
     public function fetchAllCodes(): JsonResponse
     {
         try {
@@ -36,7 +35,7 @@ class InvitationCodeController extends Controller
                 'id'          => $code->id,
                 'code'        => $code->code,
                 'role_id'     => $code->role_id,
-                'expired_at'  => $code->expired_at,
+                'expires_at'  => $code->expires_at,
                 'created_at'  => $code->created_at,
                 'redeemed_at' => $code->redeemed_at,
             ];
@@ -67,7 +66,7 @@ class InvitationCodeController extends Controller
                     'id'          => $newCode->id,
                     'code'        => $newCode->code,
                     'role_id'     => $newCode->role_id,
-                    'expired_at'  => $newCode->expired_at,
+                    'expires_at'  => $newCode->expires_at,
                     'created_at'  => $newCode->created_at,
                     'redeemed_at' => $newCode->redeemed_at,
                 ]
