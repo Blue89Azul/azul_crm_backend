@@ -29,7 +29,8 @@ class SignUpRequest extends FormRequest
     public function rules(): array
     {
         $rule = [
-            'email'    => ['required', 'string', 'email:filter', 'unique:users'],
+            'email'    => ['required', 'string', 'email:filter'],
+            'account'  => ['required', 'string'],
             'password' => ['required', new ValidPassword],
             'role'     => ['required', Rule::enum(UserRole::class)],
         ];
@@ -38,7 +39,7 @@ class SignUpRequest extends FormRequest
         $userRole = $this->input('role');
 
         if (!is_null($userRole) && UserRole::from($userRole)->isMember()) {
-            $rule['invitation_code'] = ['required', new ValidInvitationCode];
+            $rule['code'] = ['required'];
         }
 
         return $rule;
