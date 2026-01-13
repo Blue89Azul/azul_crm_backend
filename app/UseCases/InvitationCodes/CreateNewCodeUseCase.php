@@ -19,13 +19,13 @@ class CreateNewCodeUseCase
     public function __invoke()
     {
         $user = Auth::user();
-        $now = now();
-
-        $this->repository->createNewCode([
-            'created_by' => $user->id,
-            'organization_id' => $user->organization_id,
-            'created_at' => $now,
-            'updated_at' => $now,
+        $now  = now();
+        return $this->repository->createNewCode([
+            'created_by'      => $user->id,
+            'role_id'         => $user->user_role_id,
+            'expires_at'      => $now,
+            'created_at'      => $now,
+            'updated_at'      => $now,
         ]);
     }
 }
