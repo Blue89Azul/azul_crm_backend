@@ -5,16 +5,27 @@ declare(strict_types=1);
 namespace App\Repositories\InvitationCodes;
 
 use App\Models\InvitationCode;
+use Carbon\Carbon;
 
 class InvitationCodesRepository
 {
-    public function fetchPagenated(int $pageNumber)
+    public function fetchAll()
     {
-        return InvitationCode::paginate($pageNumber);
+        return InvitationCode::all();
     }
 
-    public function createNewCode(array $attributes)
+    public function fetchByCode(string $code)
     {
-        InvitationCode::create($attributes);
+        return InvitationCode::where('code', $code)->first();
+    }
+
+    public function updateRedeemedAtById(int $id, Carbon $now)
+    {
+        return InvitationCode::where('id', $id)->update(['redeemed_at' => $now]);
+    }
+
+    public function createNewCode(array $attributes): InvitationCode
+    {
+        return InvitationCode::create($attributes);
     }
 }
