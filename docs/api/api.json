@@ -14,46 +14,216 @@
             "description": "prod"
         }
     ],
+    "security": [
+        {
+            "apiKey": []
+        },
+        {
+            "http": []
+        }
+    ],
     "paths": {
-        "/signup": {
+        "/logout": {
             "post": {
-                "operationId": "auth.signup",
-                "summary": "signUp",
+                "operationId": "auth.logout",
+                "summary": "Logout",
                 "tags": [
                     "Auth"
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "anyOf": [
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "token": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "token"
-                                            ]
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
                                         },
-                                        {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "operationId": "auth.signup",
+                "summary": "SignUp",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignUpRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "data": {
                                             "type": "object",
                                             "properties": {
-                                                "token": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "error"
+                                                "account": {
+                                                    "type": "string"
+                                                },
+                                                "jwt": {
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "role_id": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "email",
+                                                        "role_id"
                                                     ]
                                                 }
                                             },
                                             "required": [
-                                                "token"
+                                                "account",
+                                                "jwt",
+                                                "user"
                                             ]
+                                        },
+                                        "meta": {
+                                            "type": "array",
+                                            "items": {}
                                         }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Token creation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
                                     ]
                                 }
                             }
@@ -65,28 +235,492 @@
                 }
             }
         },
-        "/login/email": {
+        "/login": {
             "post": {
-                "operationId": "auth.loginWithEmail",
+                "operationId": "auth.login",
+                "summary": "Login with credentail data",
                 "tags": [
                     "Auth"
                 ],
                 "responses": {
                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "account": {
+                                                    "type": "string"
+                                                },
+                                                "jwt": {
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "role_id": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "email",
+                                                        "role_id"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "account",
+                                                "jwt",
+                                                "user"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Invalid credentials"
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "enum": [
+                                                400
+                                            ]
+                                        },
+                                        "detail": {
+                                            "type": "integer",
+                                            "enum": [
+                                                401
+                                            ]
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
                                 }
                             }
                         }
                     }
                 }
             }
+        },
+        "/invitation_codes": {
+            "get": {
+                "operationId": "invitationCode.fetchAllCodes",
+                "summary": "Fetch all invitation codes",
+                "tags": [
+                    "InvitationCode"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched invitation code list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "code": {
+                                                        "type": "string"
+                                                    },
+                                                    "role_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "redeemed_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "code",
+                                                    "role_id",
+                                                    "expires_at",
+                                                    "created_at",
+                                                    "redeemed_at"
+                                                ]
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "invitationCode.createNewCode",
+                "summary": "Create new invitation code",
+                "tags": [
+                    "InvitationCode"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvitationCodeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created invitation code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "code": {
+                                                        "type": "string"
+                                                    },
+                                                    "role_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "redeemed_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "code",
+                                                    "role_id",
+                                                    "expires_at",
+                                                    "created_at",
+                                                    "redeemed_at"
+                                                ]
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "instance": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "title",
+                                        "status",
+                                        "detail",
+                                        "instance",
+                                        "timestamp"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
         }
     },
     "components": {
+        "securitySchemes": {
+            "apiKey": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-Tenant"
+            },
+            "http": {
+                "type": "http",
+                "scheme": "Bearer"
+            }
+        },
+        "schemas": {
+            "InvitationCodeRequest": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "$ref": "#/components/schemas/UserRole"
+                    }
+                },
+                "required": [
+                    "role"
+                ],
+                "title": "InvitationCodeRequest"
+            },
+            "SignUpRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "account": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/UserRole"
+                    }
+                },
+                "required": [
+                    "email",
+                    "account",
+                    "password",
+                    "role"
+                ],
+                "title": "SignUpRequest"
+            },
+            "UserRole": {
+                "type": "string",
+                "enum": [
+                    "admin",
+                    "member"
+                ],
+                "title": "UserRole"
+            }
+        },
         "responses": {
             "ValidationException": {
                 "description": "Validation error",
