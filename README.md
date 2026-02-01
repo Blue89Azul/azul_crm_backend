@@ -14,8 +14,8 @@ AZUL CRM is a mobile app for startup teams. It helps CEOs and sales members mana
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Flutter
-- **Backend:** Laravel 12
+- **Frontend:** Flutter [Link](https://github.com/Blue89Azul/azul-crm)
+- **Backend:** Laravel 12 [Link](https://github.com/Blue89Azul/azul_crm_backend)
 - **Database:** MySQL
 - **Payments:** Paddle (Planned)
 
