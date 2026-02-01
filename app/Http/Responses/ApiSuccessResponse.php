@@ -4,17 +4,27 @@ namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @template TData of array
+ */
 final class ApiSuccessResponse implements ApiResponse
 {
+    /**
+     * @param TData $data
+     */
     public function __construct(
-        private mixed $data   = null,
+        private array $data   = [],
         private string $title = '',
         private int $status   = 200,
         private array $meta   = []
     ) {}
 
+    /**
+     * @param TData $data
+     * @return self<TData>
+     */
     public static function make(
-        mixed $data   = null,
+        array $data   = [],
         string $title = 'success',
         int $status   = 200,
         array $meta   = []
@@ -31,7 +41,7 @@ final class ApiSuccessResponse implements ApiResponse
     {
         return response()->json([
             'title' => $this->title,
-            'data'  => $this->data ?? [],
+            'data'  => $this->data,
             'meta'  => $this->meta,
         ], $this->status);
     }

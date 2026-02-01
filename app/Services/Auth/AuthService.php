@@ -28,7 +28,7 @@ class AuthService
         $now = now();
 
         if ($this->tenantRepository->hasSameAccount($account)) {
-            throw new InvalidArgumentException("このアカウントはすでに使用されています");
+            throw new InvalidArgumentException("This account is already in use");
         }
 
         $newAccount = $this->tenantRepository->createAccount($account);
@@ -37,7 +37,7 @@ class AuthService
             tenancy()->initialize($newAccount);
 
             if ($this->authRepository->existsByEmail($email)) {
-                throw new InvalidArgumentException("このメールアドレスはすでに使用されています。");
+                throw new InvalidArgumentException("This email address is already in use");
             }
 
             $user = $this->authRepository->createUser([
@@ -68,21 +68,19 @@ class AuthService
         string $password,
         string $code
     ) {
-        // テナントが存在するか確認
         if (!$this->tenantRepository->hasSameAccount($account)) {
-            throw new InvalidArgumentException("指定されたアカウントが存在しません。");
+            throw new InvalidArgumentException("The specified account does not exist");
         }
 
         $currentAccount = $this->tenantRepository->findByAccount($account);
 
-        // 当該アカウントのテナントにアクセス
         tenancy()->initialize($account);
 
         $now = now();
         try {
             $invitationCode = $this->invitationCodeRepository->fetchByCode($code);
             if (is_null($invitationCode)) {
-                throw new InvalidArgumentException("無効な招待コードです。");
+                throw new InvalidArgumentException("Invalid invitation code");
             }
 
             $this->invitationCodeRepository->updateRedeemedAtById($invitationCode->id, $now);

@@ -10,6 +10,7 @@ use App\Http\Responses\ApiErrorResponse;
 use App\Http\Responses\ApiSuccessResponse;
 use App\Services\Auth\AuthService;
 use App\UseCases\Auth\LoginWithEmailUseCase;
+use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -23,11 +24,26 @@ class AuthController extends Controller
     ) {}
 
     /**
-     * signUp
+     * SignUp
+     * 
      * @param \App\Http\Requests\Auth\SignUpRequest $request
      * @return JsonResponse
-     * 
      */
+    #[Response(
+        status: 200,
+        description: 'User registration successful',
+        type: 'array{title: string, data: array{account: string, jwt: string, user: array{email: string, role_id: int}}, meta: array}'
+    )]
+    #[Response(
+        status: 400,
+        description: 'Validation error',
+        type: 'array{type: string, title: string, status: int, detail: string, instance: string, timestamp: string}'
+    )]
+    #[Response(
+        status: 500,
+        description: 'Token creation failed',
+        type: 'array{type: string, title: string, status: int, detail: string, instance: string, timestamp: string}'
+    )]
     public function signup(SignUpRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -35,8 +51,8 @@ class AuthController extends Controller
 
         if (is_null($userRole)) {
             return ApiErrorResponse::make(
-                'トークン作成失敗',
-                'ユーザーロールがリクエストに含まれていません',
+                'Token creation failed',
+                'User role is not included in the request',
                 400,
             )->toResponse();
         }
@@ -59,14 +75,13 @@ class AuthController extends Controller
             );
         }
 
-        $user    = $result['user'];
-        $account = $result['account'];
+        $user = $result['user'];
 
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
             return ApiErrorResponse::make(
-                'トークン作成の失敗',
+                'Token creation failed',
                 $e->getMessage(),
                 500,
             )->toResponse();
@@ -84,6 +99,27 @@ class AuthController extends Controller
         )->toResponse();
     }
 
+    /**
+     * Login with credentail data
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    #[Response(
+        status: 200,
+        description: 'Success',
+        type: 'array{title: string, data: array{account: string, jwt: string, user: array{email: string, role_id: int}}, meta: array}'
+    )]
+    #[Response(
+        status: 401,
+        description: 'Authentication failed',
+        type: 'array{type: string, title: string, status: int, detail: string, instance: string, timestamp: string}'
+    )]
+    #[Response(
+        status: 500,
+        description: 'Server Error',
+        type: 'array{type: string, title: string, status: int, detail: string, instance: string, timestamp: string}'
+    )]
     public function login(Request $request): JsonResponse
     {
         try {
@@ -116,6 +152,21 @@ class AuthController extends Controller
         )->toResponse();
     }
 
+    /**
+     * Logout
+     * 
+     * @return JsonResponse
+     */
+    #[Response(
+        status: 200,
+        description: 'Success',
+        type: 'array{title: string, data: array{message: log out successfully}, meta: array}'
+    )]
+    #[Response(
+        status: 500,
+        description: 'Server Error',
+        type: 'array{type: string, title: string, status: int, detail: string, instance: string, timestamp: string}'
+    )]
     public function logout(): JsonResponse
     {
         try {

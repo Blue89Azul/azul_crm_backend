@@ -1,5 +1,7 @@
 <?php
 
+use Tymon\JWTAuth\Providers\Auth\Illuminate;
+
 return [
 
     /*
